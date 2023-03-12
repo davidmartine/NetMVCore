@@ -15,9 +15,9 @@ namespace ManejoPresupuesto.Controllers
         private readonly IRepositorioTransacciones transacciones;
         private readonly IMapper mapper;
 
-        public TransaccionesController(IservicioUsuarios servicioUsuarios, 
-            IRepositorioCuentas repositorioCuentas,IRepositorioCategorias repositorioCategorias,
-            IRepositorioTransacciones transacciones,IMapper mapper)
+        public TransaccionesController(IservicioUsuarios servicioUsuarios,
+            IRepositorioCuentas repositorioCuentas, IRepositorioCategorias repositorioCategorias,
+            IRepositorioTransacciones transacciones, IMapper mapper)
         {
             this.servicioUsuarios = servicioUsuarios;
             this.repositorioCuentas = repositorioCuentas;
@@ -51,17 +51,17 @@ namespace ManejoPresupuesto.Controllers
 
             }
             var cuenta = await repositorioCuentas.ObtenerPorId(modelo.CuentaId, usuarioId);
-            if(cuenta is null)
+            if (cuenta is null)
             {
                 return RedirectToAction("NoEncontrado", "Home");
             }
             var categoria = await repositorioCategorias.ObtenerporId(modelo.CategoriaId, usuarioId);
-            if(categoria is null)
+            if (categoria is null)
             {
                 return RedirectToAction("NoEncontrado", "Home");
             }
             modelo.UsuarioId = usuarioId;
-            if(modelo.TipoOperacionId == TipoOperacion.Gasto)
+            if (modelo.TipoOperacionId == TipoOperacion.Gasto)
             {
                 //gudar un gasto en negativo
                 modelo.Monto *= -1;
@@ -79,11 +79,11 @@ namespace ManejoPresupuesto.Controllers
 
         private async Task<IEnumerable<SelectListItem>> ObtenerCategorias(int usuarioId,
             TipoOperacion tipoOperacion)
-        
+
         {
             var categorias = await repositorioCategorias.Obtener(usuarioId, tipoOperacion);
-            return categorias.Select(x =>new SelectListItem(x.Nombre,x.Id.ToString()));
-            
+            return categorias.Select(x => new SelectListItem(x.Nombre, x.Id.ToString()));
+
         }
 
         [HttpPost]
@@ -95,27 +95,71 @@ namespace ManejoPresupuesto.Controllers
 
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Editar(int id)
-        //{
-        //    var usuarioId = servicioUsuarios.obtenerusuarioid();
-        //    var transaccion = await transacciones.ObtenerPorId(id, usuarioId);
+        [HttpGet]
+        public async Task<IActionResult> Editar(int id)
+        {
+            var usuarioId = servicioUsuarios.obtenerusuarioid();
+            var transaccion = await transacciones.ObtenerPorId(id, usuarioId);
 
-        //    if(transaccion is null)
-        //    {
-        //        return RedirectToAction("NoEncontrado", "Home");
-        //    }
-        //    var modelo = mapper.Map<TransaccionActualizacionVistaModel>(transaccion);
-        //    if(modelo.TipoOperacionId == TipoOperacion.Gasto)
-        //    {
-        //        modelo.MontoAnterior = modelo.Monto * -1;
+            if (transaccion is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+            var modelo = mapper.Map<TransaccionActualizacionVistaModel>(transaccion);
+            modelo.MontoAnterior = modelo.Monto;
+            if (modelo.TipoOperacionId == TipoOperacion.Gasto)
+            {
+                // para tomar un valor negativo
+                modelo.MontoAnterior = modelo.Monto * -1;
 
-        //    }
-        //    modelo.CuentaAnteriorId = transaccion.CuentaId;
-        //    modelo.Categorias = await ObtenerCategorias(usuarioId, transaccion.TipoOperacionId);
-        //    modelo.Cuentas = await ObtenerCategorias(usuarioId);
+            }
+            modelo.CuentaAnteriorId = transaccion.CuentaId;
+            modelo.Categorias = await ObtenerCategorias(usuarioId, transaccion.TipoOperacionId);
+            modelo.Cuentas = await ObtenerCuentas(usuarioId);
 
-        //    return View(modelo);
-        //}
+            return View(modelo);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(TransaccionActualizacionVistaModel modelo)
+        {
+            var usuarioId = servicioUsuarios.obtenerusuarioid();
+            if (!ModelState.IsValid)
+            {
+                modelo.Cuentas = await ObtenerCuentas(usuarioId);
+                modelo.Categorias = await ObtenerCategorias(usuarioId, modelo.TipoOperacionId);
+                return View(modelo);
+            }
+            var cuenta = await repositorioCuentas.ObtenerPorId(modelo.CuentaId, usuarioId);
+            if (cuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+            var categoria = await repositorioCategorias.ObtenerporId(modelo.CategoriaId, usuarioId);
+            if (categoria is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+            var transaccion = mapper.Map<Transaccion>(modelo);
+            if (modelo.TipoOperacionId == TipoOperacion.Gasto)
+            {
+                transaccion.Monto *= -1;
+            }
+            await transacciones.Actualizar(transaccion, modelo.MontoAnterior, modelo.CuentaAnteriorId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Borrar(int id)
+        {
+            var usuarioid = servicioUsuarios.obtenerusuarioid();
+            var transaccion = await transacciones.ObtenerPorId(id, usuarioid);
+            if(transacciones is null)
+            {
+                return RedirectToAction("NoEncontrado","Home");
+            }
+            await transacciones.Borrar(id);
+            return RedirectToAction("Index");
+        }
     }
 }

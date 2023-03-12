@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "GvKGryHtQLmgDtBe67eMsRZky1IElDxVFt6O4Tworg0=",
+  "Hash": "4zAVSatAL/dfHkb4Q5umf0YqWft/BRYZyv4eD1c1Ht8=",
   "Source": "ManejoPresupuesto",
   "BasePath": "_content/ManejoPresupuesto",
   "Mode": "Default",
@@ -100,6 +100,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\juand\\OneDrive\\Documents\\Cursos\\Net6\\AspNetCoreMVC-main\\AspNetCoreMVC-main\\ManejoPresupuesto\\wwwroot\\js\\FormularioTransacciones.js",
+      "SourceId": "ManejoPresupuesto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\juand\\OneDrive\\Documents\\Cursos\\Net6\\AspNetCoreMVC-main\\AspNetCoreMVC-main\\ManejoPresupuesto\\wwwroot\\",
+      "BasePath": "_content/ManejoPresupuesto",
+      "RelativePath": "js/FormularioTransacciones.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\FormularioTransacciones.js"
     },
     {
       "Identity": "C:\\Users\\juand\\OneDrive\\Documents\\Cursos\\Net6\\AspNetCoreMVC-main\\AspNetCoreMVC-main\\ManejoPresupuesto\\wwwroot\\js\\site.js",
