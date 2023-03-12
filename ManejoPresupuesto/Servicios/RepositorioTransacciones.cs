@@ -26,9 +26,9 @@ namespace ManejoPresupuesto.Servicios
                     transaccion.UsuarioId,
                     transaccion.FechaTransaccion,
                     transaccion.Monto,
-                    transaccion.CategoriaId,
+                    transaccion.Nota,
                     transaccion.CuentaId,
-                    transaccion.Nota
+                    transaccion.CategoriaId,
                 },commandType: System.Data.CommandType.StoredProcedure);
             transaccion.Id = id;
         }

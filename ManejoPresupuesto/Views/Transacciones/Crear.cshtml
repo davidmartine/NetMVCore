@@ -9,7 +9,7 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="FechaTransaccion" class="form-label"></label>
-        <input asp-for="FechaTransaccion" class="form-control" />
+        <input asp-for="FechaTransaccion" type="date" class="form-control" />
         <span asp-validation-for="FechaTransaccion" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -19,12 +19,13 @@
     </div>
     <div class="mb-3">
         <label asp-for="TipoOperacionId" class="form-label"></label>
-        <select asp-for="TipoOperacionId" asp-items="Html.GetEnumSelectList<TipoOperacion>()" class="form-select"></select>
+        <select asp-for="TipoOperacionId" asp-items="Html.GetEnumSelectList<TipoOperacion>()"
+                class="form-select" id="TipoOperacionId" name="TipoOperacionId"></select>
         <span asp-validation-for="TipoOperacionId" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="CategoriaId" class="form-label"></label>
-        <select asp-for="CategoriaId" class="form-select"></select>
+        <select asp-for="CategoriaId" class="form-select" id="CategoriaId"></select>
         <span asp-validation-for="CategoriaId" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -53,7 +54,7 @@
             $("#TipoOperacionId").change(async function () {
                 const valorSeleccionado = $(this).val();
 
-                const respuesta = await fetch('urlObtenerCategorias', {
+                const respuesta = await fetch(urlObtenerCategorias, {
                     method: 'POST',
                     body: valorSeleccionado,
                     headers: {
@@ -62,6 +63,7 @@
                 });
 
                 const json = await respuesta.json();
+               // console.log(json);
                 const opciones = json.map(categoria => `<option value=${categoria.value}>${categoria.text}</option>`);
                 $("#CategoriaId").html(opciones);
             })

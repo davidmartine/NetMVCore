@@ -63,6 +63,7 @@ namespace ManejoPresupuesto.Controllers
             modelo.UsuarioId = usuarioId;
             if(modelo.TipoOperacionId == TipoOperacion.Gasto)
             {
+                //gudar un gasto en negativo
                 modelo.Monto *= -1;
 
             }
@@ -78,10 +79,11 @@ namespace ManejoPresupuesto.Controllers
 
         private async Task<IEnumerable<SelectListItem>> ObtenerCategorias(int usuarioId,
             TipoOperacion tipoOperacion)
+        
         {
             var categorias = await repositorioCategorias.Obtener(usuarioId, tipoOperacion);
             return categorias.Select(x =>new SelectListItem(x.Nombre,x.Id.ToString()));
-
+            
         }
 
         [HttpPost]
@@ -93,27 +95,27 @@ namespace ManejoPresupuesto.Controllers
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Editar(int id)
-        {
-            var usuarioId = servicioUsuarios.obtenerusuarioid();
-            var transaccion = await transacciones.ObtenerPorId(id, usuarioId);
+        //[HttpGet]
+        //public async Task<IActionResult> Editar(int id)
+        //{
+        //    var usuarioId = servicioUsuarios.obtenerusuarioid();
+        //    var transaccion = await transacciones.ObtenerPorId(id, usuarioId);
 
-            if(transaccion is null)
-            {
-                return RedirectToAction("NoEncontrado", "Home");
-            }
-            var modelo = mapper.Map<TransaccionActualizacionVistaModel>(transaccion);
-            if(modelo.TipoOperacionId == TipoOperacion.Gasto)
-            {
-                modelo.MontoAnterior = modelo.Monto * -1;
+        //    if(transaccion is null)
+        //    {
+        //        return RedirectToAction("NoEncontrado", "Home");
+        //    }
+        //    var modelo = mapper.Map<TransaccionActualizacionVistaModel>(transaccion);
+        //    if(modelo.TipoOperacionId == TipoOperacion.Gasto)
+        //    {
+        //        modelo.MontoAnterior = modelo.Monto * -1;
 
-            }
-            modelo.CuentaAnteriorId = transaccion.CuentaId;
-            modelo.Categorias = await ObtenerCategorias(usuarioId, transaccion.TipoOperacionId);
-            modelo.Cuentas = await ObtenerCategorias(usuarioId);
+        //    }
+        //    modelo.CuentaAnteriorId = transaccion.CuentaId;
+        //    modelo.Categorias = await ObtenerCategorias(usuarioId, transaccion.TipoOperacionId);
+        //    modelo.Cuentas = await ObtenerCategorias(usuarioId);
 
-            return View(modelo);
-        }
+        //    return View(modelo);
+        //}
     }
 }
