@@ -44,7 +44,7 @@ namespace ManejoPresupuesto.Servicios
         {
             using var conexion = new SqlConnection(connectionString);
             return await conexion.QueryFirstOrDefaultAsync<Cuenta>(@"
-                                  SELECT c.Id,c.Nombre,c.Balance,c.Descripcion,tc.Id 
+                                  SELECT c.Id,c.Nombre,c.Balance,c.Descripcion,TipoCuentaId
                                   FROM Cuentas c
                                   JOIN TipoCuenta tc ON tc.Id=c.TipoCuentaId
                                   WHERE tc.UsuarioId=@UsuarioId AND c.Id=@Id", new { id, usuarioId });

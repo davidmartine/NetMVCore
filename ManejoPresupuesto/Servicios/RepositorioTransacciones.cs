@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ManejoPresupuesto.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 namespace ManejoPresupuesto.Servicios
@@ -11,6 +12,7 @@ namespace ManejoPresupuesto.Servicios
         Task Crear(Transaccion transaccion);
         Task<IEnumerable<Transaccion>> ObtenerPorCuentaId(ObtenerTransaccionesPorCuenta modelo);
         Task<Transaccion> ObtenerPorId(int id, int usuarioid);
+        Task<IEnumerable<Transaccion>> ObtenerPorUsuarioId(ParametroObtenerTransaccionesPorUsuario modelo);
     }
     public class RepositorioTransacciones : IRepositorioTransacciones
     {
@@ -86,7 +88,23 @@ namespace ManejoPresupuesto.Servicios
                 INNER JOIN Cuentas CU
                 ON CU.Id=T.CuentaId
                 WHERE T.CuentaId=@CuentaId AND T.UsuarioId=@UsuarioId
-                AND FechaTransaccion BETWEEN @FechaInicio AND @FechaFin", modelo);
+                AND FechaTransaccion BETWEEN @FechaInicio AND @FechaFin",modelo);
+
+        }
+
+        public async Task<IEnumerable<Transaccion>> ObtenerPorUsuarioId(ParametroObtenerTransaccionesPorUsuario modelo)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<Transaccion>(@"
+                SELECT T.Id,T.Monto,T.FechaTransaccion,C.Nombre AS Categoria,
+                CU.Nombre AS Cuenta,C.TipoOperacionId
+                FROM Transacciones T
+                INNER JOIN Categorias C
+                ON C.Id=T.CategoriaId
+                INNER JOIN Cuentas CU
+                ON CU.Id=T.CuentaId
+                WHERE T.UsuarioId=@UsuarioId AND FechaTransaccion BETWEEN @FechaInicio AND @FechaFin
+                ORDER BY T.FechaTransaccion DESC", modelo);
 
         }
     }
