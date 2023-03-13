@@ -30,6 +30,10 @@ namespace ManejoPresupuesto.Models
         public TipoOperacion TipoOperacionId { get; set; } = TipoOperacion.Ingreso;
 
 
+        //nuevas propiedades
+
+        public string Cuenta { get; set; }
+        public string Categoria { get; set; }
 
     }
 }

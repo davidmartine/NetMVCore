@@ -4,5 +4,7 @@
     {
         public int CuentaAnteriorId { get; set; }
         public Decimal MontoAnterior { get; set; }
+        public string urlRetorno { get; set; }
+
     }
 }
